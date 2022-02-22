@@ -2,10 +2,8 @@
 
 import telebot  # pyTelegramBotAPI	4.3.1
 from telebot import types
-import requests # Требуется для "Прислать собаку"
-import bs4 # требуется для get_anekdot()
 
-bot = telebot.TeleBot('5149965447:AAF3z_oB2sM6Cch1scdWe5AV_aAV3bWmXiA')  # Создаем экземпляр бота
+bot = telebot.TeleBot('5149965447:AAF3z_oB2sM6Cch1scdWe5AV_aAV3bWmXiA1')  # Создаем экземпляр бота
 
 # -----------------------------------------------------------------------
 # Функция, обрабатывающая команду /start
@@ -47,14 +45,11 @@ def get_text_messages(message):
         markup.add(btn1, btn2, back)
         bot.send_message(chat_id, text="Развлечения", reply_markup=markup)
 
-
     elif ms_text == "/dog" or ms_text == "Прислать собаку":  # .........................................................
-        contents = requests.get('https://random.dog/woof.json').json()
-        urlDOG = contents['url']
-        bot.send_photo(chat_id, photo=urlDOG, caption="Вот тебе собачка!")
+        bot.send_message(chat_id, text="еще не готово...")
 
     elif ms_text == "Прислать анекдот":  # .............................................................................
-        bot.send_message(chat_id, text=get_anekdot())
+        bot.send_message(chat_id, text="еще не готово...")
 
     elif ms_text == "WEB-камера":
         bot.send_message(chat_id, text="еще не готово...")
@@ -72,17 +67,6 @@ def get_text_messages(message):
 
     else:  # ...........................................................................................................
         bot.send_message(chat_id, text="Я тебя слышу!!! Ваше сообщение: " + ms_text)
-
-# -----------------------------------------------------------------------
-def get_anekdot():
-    array_anekdots = []
-    z = ''
-    s = requests.get('https://nekdo.ru/random/')
-    soup = bs4.BeautifulSoup(s.text, "html.parser")
-    result_find = soup.select('.text')
-    for result in result_find:
-        array_anekdots.append(result.getText().strip())
-    return array_anekdots[0]
 
 # -----------------------------------------------------------------------
 bot.polling(none_stop=True, interval=0) # Запускаем бота
