@@ -5,7 +5,7 @@ from telebot import types
 import requests # Требуется для "Прислать собаку"
 import bs4 # требуется для get_anekdot()
 
-bot = telebot.TeleBot('5149965447:AAF3z_oB2sM6Cch1scdWe5AV_aAV3bWmXiA')  # Создаем экземпляр бота
+bot = telebot.TeleBot('5149965447:AAF3z_oB2sM6Cch1scdWe5AV_aAV3bWmXiA1')  # Создаем экземпляр бота
 
 # -----------------------------------------------------------------------
 # Функция, обрабатывающая команду /start
