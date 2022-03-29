@@ -58,9 +58,9 @@ def get_text_messages(message):
         bot.send_message(chat_id, text="еще не готово...")
 
     elif ms_text == "Помощь" or ms_text == "/help":  # .................................................................
-        bot.send_message(chat_id, "Автор: Швец Андрей")
+        bot.send_message(chat_id, "Автор: Радионов Богдан")
         key1 = types.InlineKeyboardMarkup()
-        btn1 = types.InlineKeyboardButton(text="Напишите автору", url="https://t.me/user59387")
+        btn1 = types.InlineKeyboardButton(text="Напишите автору", url="https://t.me/fuziquee")
         key1.add(btn1)
         img = open('Швец Андрей.png', 'rb')
         bot.send_photo(message.chat.id, img, reply_markup=key1)
