@@ -237,7 +237,6 @@ def get_randomFilm():
     return infoFilm
 # ---------------------------------------------------------------------
 
-
 bot.polling(none_stop=True, interval=0)  # Запускаем бота
 
 print()

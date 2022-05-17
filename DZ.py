@@ -1,9 +1,15 @@
+summ = 0
+comp = 1
 # -----------------------------------------------------------------------
 def dz1(bot, chat_id):
-    bot.send_message(chat_id, text="Богдан")
+    dz1_ResponseHandler = lambda message: bot.send_message(chat_id, f"Твое имя в большом регистре! - {(message.text).upper()}! \n Твое имя в малом регистре! - {(message.text).lower()}")
+    my_input(bot, chat_id, "Выведу твое имя с разным регистром", dz1_ResponseHandler)
 # -----------------------------------------------------------------------
 def dz2(bot, chat_id):
-    bot.send_message(chat_id, text="18")
+    my_inputInt(bot, chat_id, "Выведу сумму и произведение цифр твоего возраста!", dz2_ResponseHandler)
+
+def dz2_ResponseHandler(bot, chat_id, summ_age_int, comp_age_int):
+    bot.send_message(chat_id, f"сумма - {summ_age_int}, произведение - {comp_age_int}")
 # -----------------------------------------------------------------------
 def dz3(bot, chat_id):
     bot.send_message(chat_id, text="ДОДЕЛАТЬ")
@@ -46,8 +52,12 @@ def my_inputInt_SecondPart(message, botQuestion, txtQuestion, ResponseHandler):
     except ValueError:
         botQuestion.send_message(chat_id,
                          text="Можно вводить ТОЛЬКО целое число в десятичной системе исчисления (символами от 0 до 9)!\nПопробуйте еще раз...")
-        my_inputInt(botQuestion, chat_id, txtQuestion, ResponseHandler)  # это не рекурсия, но очень похоже
-        # у нас пара процедур, которые вызывают друг-друга, пока пользователь не введёт корректные данные,
-        # и тогда этот цикл прервётся, и управление перейдёт "наружу", в ResponseHandler
+        my_inputInt(botQuestion, chat_id, txtQuestion, ResponseHandler)
 
+def summ_and_comp(age_int, summ_age_int, comp_age_int):
+    while age_int > 0:
+        summ_age_int += age_int % 10
+        comp_age_int *= age_int % 10
+        age_int //= 10
+        return summ_age_int, comp_age_int
 # -----------------------------------------------------------------------

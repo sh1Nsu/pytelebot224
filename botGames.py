@@ -4,8 +4,8 @@ from telebot import types
 import menuBot
 
 # -----------------------------------------------------------------------
-# вместо того, что бы делать еще один класс, обойдёмся без него - подумайте, почему и как
-activeGames = {}  # Тут будем накапливать все активные игры. У пользователя может быть только одна активная игра
+
+activeGames = {}
 
 
 def newGame(chatID, newGame):
@@ -37,7 +37,7 @@ class Card:
     emo_DIAMONDS = "U0002666"  # Unicod эмоджи Буби
 
     def __init__(self, card):
-        if isinstance(card, dict):  # если передали словарь
+        if isinstance(card, dict):
             self.__card_JSON = card
             self.code = card["code"]
             self.suit = card["suit"]
@@ -48,7 +48,7 @@ class Card:
             self.__imagesSVG_URL = card["images"]["svg"]
             # print(self.value, self.suit, self.code)
 
-        elif isinstance(card, str):  # карту передали строкой, в формате "2S"
+        elif isinstance(card, str):
             self.__card_JSON = None
             self.code = card
 
@@ -118,20 +118,20 @@ class Card:
 # -----------------------------------------------------------------------
 class Game21:
     def __init__(self, deck_count=1, jokers_enabled=False):
-        new_pack = self.new_pack(deck_count, jokers_enabled)  # в конструкторе создаём новую пачку из deck_count-колод
+        new_pack = self.new_pack(deck_count, jokers_enabled)
         if new_pack is not None:
-            self.pack_card = new_pack  # сформированная колода
-            self.remaining = new_pack["remaining"],  # количество оставшихся карт в колоде
-            self.card_in_game = []  # карты в игре
-            self.arr_cards_URL = []  # URL карт игрока
-            self.score = 0  # очки игрока
-            self.status = None  # статус игры, True - игрок выиграл, False - Игрок проиграл, None - Игра продолжается
+            self.pack_card = new_pack
+            self.remaining = new_pack["remaining"],
+            self.card_in_game = []
+            self.arr_cards_URL = []
+            self.score = 0
+            self.status = None
 
     # ---------------------------------------------------------------------
     def new_pack(self, deck_count, jokers_enabled=False):
         txtJoker = "&jokers_enabled=true" if jokers_enabled else ""
         response = requests.get(f"https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count={deck_count}" + txtJoker)
-        # создание стопки карт из "deck_count" колод по 52 карты
+
         if response.status_code != 200:
             return None
         pack_card = response.json()
@@ -141,23 +141,23 @@ class Game21:
     def get_cards(self, card_count=1):
         if self.pack_card == None:
             return None
-        if self.status != None:  # игра закончена
+        if self.status != None:
             return None
 
         deck_id = self.pack_card["deck_id"]
         response = requests.get(f"https://deckofcardsapi.com/api/deck/{deck_id}/draw/?count={card_count}")
-        # достать из deck_id-колоды card_count-карт
+
         if response.status_code != 200:
             return False
 
         new_cards = response.json()
         if new_cards["success"] != True:
             return False
-        self.remaining = new_cards["remaining"]  # обновим в классе количество оставшихся карт в колоде
+        self.remaining = new_cards["remaining"]
 
         arr_newCards = []
         for card in new_cards["cards"]:
-            card_obj = Card(card)  # создаем объекты класса Card и добавляем их в список карт у игрока
+            card_obj = Card(card)
             arr_newCards.append(card_obj)
             self.card_in_game.append(card_obj)
             self.score = self.score + card_obj.cost
@@ -235,7 +235,7 @@ class GameRPS_Multiplayer:
 
     def __init__(self, bot, chat_user):
         self.id = chat_user.id
-        self.gameNumber = 1  # счётчик сыгранных игр
+        self.gameNumber = 1
         self.objBot = bot
         self.players = {}
         self.gameTimeLeft = 0
@@ -249,7 +249,7 @@ class GameRPS_Multiplayer:
     def addPlayer(self, playerID, playerName):
         newPlayer = self.Player(playerID, playerName)
         self.players[playerID] = newPlayer
-        if playerID is not None:  # None - это компьютер
+        if playerID is not None:
             self.startTimer()  # при присоединении нового игрока перезапустим таймер
             self.setTextGame()
             # создадим в чате пользователя игровое сообщение с кнопками, и сохраним его для последующего редактирования
