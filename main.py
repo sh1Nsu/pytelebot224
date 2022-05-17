@@ -11,7 +11,9 @@ import botGames  # бот-игры, файл botGames.py
 from menuBot import Menu, Users  # в этом модуле есть код, создающий экземпляры классов описывающих моё меню
 import DZ  # домашнее задание от первого урока
 
-bot = telebot.TeleBot('5180639105:AAHVuwhXsF4vo8OAGveOkirs_HduMtCTkGY')  # Создаем экземпляр бота
+
+key = '5180639105:AAHVuwhXsF4vo8OAGveOkirs_HduMtCTkGY'
+bot = telebot.TeleBot(key)  # Создаем экземпляр бота
 
 
 # -----------------------------------------------------------------------
@@ -94,6 +96,9 @@ def get_text_messages(message):
 
         elif ms_text == "Задание-6":
             DZ.dz6(bot, chat_id)
+
+        elif ms_text == "Задание-7":
+            DZ.dz7(bot, chat_id)
 
     else:  # ...........................................................................................................
         bot.send_message(chat_id, text="Мне жаль, я не понимаю вашу команду: " + ms_text)
