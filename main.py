@@ -10,7 +10,7 @@ import bs4
 import botGames  # бот-игры, файл botGames.py
 from menuBot import Menu, Users  # в этом модуле есть код, создающий экземпляры классов описывающих моё меню
 import DZ  # домашнее задание от первого урока
-
+import newgame
 
 key = '5180639105:AAHVuwhXsF4vo8OAGveOkirs_HduMtCTkGY'
 bot = telebot.TeleBot(key)  # Создаем экземпляр бота
@@ -55,6 +55,21 @@ def get_text_messages(message):
 
         elif ms_text == "Прислать фильм":
             send_film(chat_id)
+
+        elif ms_text == "Прислать котика":
+            bot.send_photo(chat_id, photo=get_cat(), caption='Держи котика')
+
+        elif ms_text == "Прислать гуля":
+            bot.send_photo(chat_id, photo=get_ghoul(), caption='Держи гуля')
+
+        elif ms_text == "Прислать рандом картинку":
+            bot.send_photo(chat_id, photo=absolute_random(), caption='абсолютный рандом!')
+
+        elif ms_text == "Прислать аниме":
+            send_anime(chat_id)
+
+        elif ms_text == "Угадай число":
+            newgame.game(bot, chat_id)
 
         elif ms_text == "Угадай кто?":
             get_ManOrNot(chat_id)
@@ -137,6 +152,7 @@ def goto_menu(chat_id, name_menu):
     else:
         return False
 
+# -----------------------------------------------------------------------
 
 # -----------------------------------------------------------------------
 def getMediaCards(game21):
@@ -173,7 +189,14 @@ def send_film(chat_id):
     btn2 = types.InlineKeyboardButton(text="СМОТРЕТЬ онлайн", url=film["фильм_url"])
     markup.add(btn1, btn2)
     bot.send_photo(chat_id, photo=film['Обложка_url'], caption=info_str, parse_mode='HTML', reply_markup=markup)
+# -----------------------------------------------------------------------
 
+def send_anime(chat_id):
+    anime = get_randomAnime()
+    markup = types.InlineKeyboardMarkup()
+    btn1 = types.InlineKeyboardButton(text="СМОТРЕТЬ онлайн", url=anime["фильм_url"])
+    markup.add(btn1)
+    bot.send_photo(chat_id, photo=anime['poster_url'], parse_mode='HTML', reply_markup=markup)
 
 # -----------------------------------------------------------------------
 def get_anekdot():
@@ -196,7 +219,36 @@ def get_dogURL():
     if req.status_code == 200:
         r_json = req.json()
         url = r_json['url']
-        # url.split("/")[-1]
+    return url
+# -----------------------------------------------------------------------
+def get_cat():
+    try:
+        r = requests.get('http://thecatapi.com/api/images/get?format=src')
+        url = r.url
+    except:
+        url = get_cat()
+        print('Ошибка парсинга котика :(')
+        pass
+    return url
+# -----------------------------------------------------------------------
+def absolute_random():
+    try:
+        r = requests.get('https://picsum.photos/200/300?random=1')
+        url = r.url
+    except:
+        url = get_cat()
+        print('Ошибка парсинга картинки')
+        pass
+    return url
+# -----------------------------------------------------------------------
+def get_ghoul():
+    try:
+        r = requests.get('https://i.imgur.com/71uDNpb.jpeg')
+        url = r.url
+    except:
+        url = get_ghoul()
+        print('Ошибка парсинга гуля :(')
+        pass
     return url
 # -----------------------------------------------------------------------
 def get_ManOrNot(chat_id):
@@ -241,6 +293,36 @@ def get_randomFilm():
 
     return infoFilm
 # ---------------------------------------------------------------------
+
+def get_randomAnime():
+    url = 'https://anime777.ru/random'
+    infoAnime = {}
+    req_anime = requests.get(url)
+    soup = bs4.BeautifulSoup(req_anime.text, "html.parser")
+    result_find = soup.find('div', align="center", style="width: 100%")
+    infoAnime["Наименование"] = result_find.find("h2").getText()
+    names = infoAnime["Наименование"].split(" / ")
+    infoAnime["Наименование_rus"] = names[0].strip()
+
+    images = []
+    for img in result_find.findAll('img'):
+        images.append(url + img.get('src'))
+    infoAnime["poster_url"] = images[0]
+
+    details = result_find.findAll('td')
+    infoAnime["Год"] = details[0].contents[1].strip()
+    infoAnime["Страна"] = details[1].contents[1].strip()
+    infoAnime["Жанр"] = details[2].contents[1].strip()
+    infoAnime["Продолжительность"] = details[3].contents[1].strip()
+    infoAnime["Режиссёр"] = details[4].contents[1].strip()
+    infoAnime["Актёры"] = details[5].contents[1].strip()
+    infoAnime["Трейлер_url"] = url + details[6].contents[0]["href"]
+    infoAnime["фильм_url"] = url + details[7].contents[0]["href"]
+
+    return infoAnime
+
+# ---------------------------------------------------------------------
+
 
 bot.polling(none_stop=True, interval=0)  # Запускаем бота
 

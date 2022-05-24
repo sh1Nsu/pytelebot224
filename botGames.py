@@ -2,11 +2,12 @@ import requests
 import threading
 from telebot import types
 import menuBot
+import random
+import telebot
 
 # -----------------------------------------------------------------------
 
 activeGames = {}
-
 
 def newGame(chatID, newGame):
     activeGames.update({chatID: newGame})
@@ -422,5 +423,6 @@ class GameRPS_Multiplayer:
 
 
 # -----------------------------------------------------------------------
+
 if __name__ == "__main__":
     print("Этот код должен использоваться ТОЛЬКО в качестве модуля!")
