@@ -11,6 +11,7 @@ import botGames  # бот-игры, файл botGames.py
 from menuBot import Menu, Users  # в этом модуле есть код, создающий экземпляры классов описывающих моё меню
 import DZ  # домашнее задание от первого урока
 import newgame
+import excel
 
 key = '5180639105:AAHVuwhXsF4vo8OAGveOkirs_HduMtCTkGY'
 bot = telebot.TeleBot(key)  # Создаем экземпляр бота
@@ -20,6 +21,7 @@ bot = telebot.TeleBot(key)  # Создаем экземпляр бота
 # Функция, обрабатывающая команды
 @bot.message_handler(commands="start")
 def command(message, res=False):
+    user_id = message.from_user.id
     chat_id = message.chat.id
     txt_message = f"Привет, {message.from_user.first_name}! Я тестовый бот для курса программирования на языке Python"
     bot.send_message(chat_id, text=txt_message, reply_markup=Menu.getMenu(chat_id, "Главное меню").markup)
@@ -73,6 +75,9 @@ def get_text_messages(message):
 
         elif ms_text == "Угадай кто?":
             get_ManOrNot(chat_id)
+
+        elif message.text == 'Статистика УК':
+            excel.stat_give(bot, chat_id, message)
 
         elif ms_text == "Карту!":
             game21 = botGames.getGame(chat_id)
@@ -313,16 +318,13 @@ def get_randomAnime():
     infoAnime["Год"] = details[0].contents[1].strip()
     infoAnime["Страна"] = details[1].contents[1].strip()
     infoAnime["Жанр"] = details[2].contents[1].strip()
-    infoAnime["Продолжительность"] = details[3].contents[1].strip()
-    infoAnime["Режиссёр"] = details[4].contents[1].strip()
-    infoAnime["Актёры"] = details[5].contents[1].strip()
     infoAnime["Трейлер_url"] = url + details[6].contents[0]["href"]
     infoAnime["фильм_url"] = url + details[7].contents[0]["href"]
 
     return infoAnime
 
 # ---------------------------------------------------------------------
-
+# ---------------------------------------------------------------------
 
 bot.polling(none_stop=True, interval=0)  # Запускаем бота
 
